@@ -13,7 +13,7 @@ jobs:
           command: date
       - run:
           name: Install required packages
-          command: sudo apt install build-essential libgmp-dev libpcre3-dev pkg-config m4 libssl-dev libsqlite3-dev wget ca-certificates unzip aspcud libncurses-dev uuid-runtime zlib1g-dev
+          command: apt install build-essential libgmp-dev libpcre3-dev pkg-config m4 libssl-dev libsqlite3-dev wget ca-certificates unzip aspcud libncurses-dev uuid-runtime zlib1g-dev -y
       - run:
           name: Install opam
           command: ./opam-bootstrap.sh
