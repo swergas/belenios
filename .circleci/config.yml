@@ -12,8 +12,11 @@ jobs:
           name: Install required packages
           command: sudo apt install build-essential libgmp-dev libpcre3-dev pkg-config m4 libssl-dev libsqlite3-dev wget ca-certificates unzip aspcud libncurses-dev uuid-runtime zlib1g-dev -y
       - run:
+          name: Print current directory
+          command: pwd
+      - run:
           name: Go to the repository directory
-          command: cd project
+          command: cd ~/project
       - run:
           name: Install local version of opam (because opam package camlp4 requires !preinstalled & ocaml-version >= "4.02" & ocaml-version < "4.03")
           command: opam switch 4.02.3
