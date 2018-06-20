@@ -28,7 +28,7 @@ jobs:
           command: eval "export TERM=xterm && " `grep "opam install" ./opam-bootstrap.sh`
       - run:
           name: Compile belenios
-          command: make all
+          command: eval `opam config env`; export TERM=xterm && make all
       - run:
           name: Run test election
           command: make check
