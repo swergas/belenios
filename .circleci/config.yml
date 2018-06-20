@@ -24,11 +24,8 @@ jobs:
           name: Update opam environment
           command: eval `opam config env`
       - run:
-          name: Hack againt https://github.com/ocaml/opam/issues/2978
-          command: export TERM=xterm
-      - run:
-          name: Install opam packages
-          command: eval `grep "opam install" ./opam-bootstrap.sh`
+          name: Install opam packages (with a hack against https://github.com/ocaml/opam/issues/2978)
+          command: eval "export TERM=xterm && " `grep "opam install" ./opam-bootstrap.sh`
       - run:
           name: Compile belenios
           command: make all
