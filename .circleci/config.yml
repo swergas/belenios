@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: debian:stretch
+      - image: ocaml/opam:debian-stable_ocaml-4.06.0
     steps:
       - checkout
       - run:
@@ -12,8 +12,8 @@ jobs:
           name: Print the Current Time
           command: date
       - run:
-          name: Install required packages
-          command: apt install build-essential libgmp-dev libpcre3-dev pkg-config m4 libssl-dev libsqlite3-dev wget ca-certificates unzip aspcud libncurses-dev uuid-runtime zlib1g-dev -y
+          name: Update apt packages list
+          command: sudo apt-get update
       - run:
-          name: Install opam
-          command: ./project/opam-bootstrap.sh
+          name: Install required packages
+          command: sudo apt install build-essential libgmp-dev libpcre3-dev pkg-config m4 libssl-dev libsqlite3-dev wget ca-certificates unzip aspcud libncurses-dev uuid-runtime zlib1g-dev -y
