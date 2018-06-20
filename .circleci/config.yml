@@ -2,18 +2,45 @@ version: 2
 jobs:
   build:
     docker:
-      - image: ocaml/opam:debian-stable_ocaml-4.06.0
+      - image: ocaml/opam:debian-9_ocaml-4.02.3
     steps:
       - checkout
-      - run:
-          name: Greeting
-          command: echo Hello, world.
-      - run:
-          name: Print the Current Time
-          command: date
       - run:
           name: Update apt packages list
           command: sudo apt-get update
       - run:
           name: Install required packages
           command: sudo apt install build-essential libgmp-dev libpcre3-dev pkg-config m4 libssl-dev libsqlite3-dev wget ca-certificates unzip aspcud libncurses-dev uuid-runtime zlib1g-dev -y
+      - run:
+          name: Go to the repository directory
+          command: cd project
+      - run:
+          name: Install local version of opam (because opam package camlp4 requires !preinstalled & ocaml-version >= "4.02" & ocaml-version < "4.03")
+          command: opam switch 4.02.3
+      - run:
+          name: Update opam environment
+          command: eval `opam config env`
+      - run:
+          name: Install opam packages
+          command: eval `grep "opam install" ./opam-bootstrap.sh`
+      - run:
+          name: Compile belenios
+          command: make all
+      - run:
+          name: Run test election
+          command: make check
+      - run:
+          name: Create a bundled version of belenios
+          command: make archive # this produces a belenios.tar.gz file, which is needed by the web server
+      - run:
+          name: Start belenios web server
+          command: ./demo/run-server.sh &
+      - run:
+          name: Access the localhost web page
+          command: first_access_index_page_output=$(wget --retry-connrefused --no-check-certificate -T 30 http://localhost:8001 -O-)
+      - run:
+          name: Print page output for debug purposes
+          command: echo $first_access_index_page_output
+      - run:
+          name: Check validity of page output
+          command: if [ "$(echo \"$first_access_index_page_output\" | grep '>Belenios</a>' | wc -l)" != "1" ]; then echo "[First page access] First page access does not show a single '>Belenios</a>' text, but it should" && exit 1; else echo "[First page access] First page access shows a single '>Belenios</a>' text, as expected"; fi
