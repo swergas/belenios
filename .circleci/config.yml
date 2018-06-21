@@ -37,13 +37,11 @@ jobs:
           command: make archive # this produces a belenios.tar.gz file, which is needed by the web server
       - run:
           name: Start belenios web server
-          command: ./demo/run-server.sh &
+          command: ./demo/run-server.sh
+          background: true
       - run:
-          name: Access the localhost web page
-          command: first_access_index_page_output=$(wget --retry-connrefused --no-check-certificate -T 30 http://localhost:8001 -O-)
-      - run:
-          name: Print page output for debug purposes
-          command: echo $first_access_index_page_output
-      - run:
-          name: Check validity of page output
-          command: if [ "$(echo \"$first_access_index_page_output\" | grep '>Belenios</a>' | wc -l)" != "1" ]; then echo "[First page access] First page access does not show a single '>Belenios</a>' text, but it should" && exit 1; else echo "[First page access] First page access shows a single '>Belenios</a>' text, as expected"; fi
+          name: Access the localhost web page, print page output for debug purposes, and check validity of page output
+          command: |
+              first_access_index_page_output=$(wget --retry-connrefused --no-check-certificate -T 30 http://localhost:8001 -O-)
+              echo $first_access_index_page_output
+              if [ "$(echo \"$first_access_index_page_output\" | grep '>Belenios</a>' | wc -l)" != "1" ]; then echo "[First page access] First page access does not show a single '>Belenios</a>' text, but it should" && exit 1; else echo "[First page access] First page access shows a single '>Belenios</a>' text, as expected"; fi
