@@ -6,17 +6,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update apt packages list
+          name: Update apt packages list (from now on, current directory is /home/opam/project)
           command: sudo apt-get update
       - run:
           name: Install required packages
           command: sudo apt install build-essential libgmp-dev libpcre3-dev pkg-config m4 libssl-dev libsqlite3-dev wget ca-certificates unzip aspcud libncurses-dev uuid-runtime zlib1g-dev -y
-      - run:
-          name: Print current directory
-          command: pwd
-      - run:
-          name: Go to the repository directory
-          command: cd ~/project
       - run:
           name: Install local version of opam (because opam package camlp4 requires !preinstalled & ocaml-version >= "4.02" & ocaml-version < "4.03")
           command: opam switch 4.02.3
@@ -37,7 +31,7 @@ jobs:
           command: make archive # this produces a belenios.tar.gz file, which is needed by the web server
       - run:
           name: Start belenios web server
-          command: ./demo/run-server.sh
+          command: eval `opam config env`; ./demo/run-server.sh
           background: true
       - run:
           name: Access the localhost web page, print page output for debug purposes, and check validity of page output
